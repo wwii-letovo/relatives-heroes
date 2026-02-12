@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Герои Великой Отечественной</title>
+  <style>
+    /* ===== ЦВЕТОВАЯ ПАЛИТРА — СВЕТЛАЯ ТЕМА ===== */
+    :root {
+      --red: #c00;
+      --gold: #d4af37;
+      --orange: #e65c00;
+      --dark-red: #8b0000;
+      --bg-light: #fffaf0;
+      --text: #222;
+      --card-bg: #ffffff;
+      --modal-bg: #ffffff;
+      --input-bg: #ffffff;
+      --input-border: var(--gold);
+      --star-color: var(--red);
+      --ribbon-color: var(--orange);
+      --transition: all 0.4s ease;
+    }
+
+    /* ===== ТЁМНАЯ ТЕМА ===== */
+    .dark-theme {
+      --red: #ff6b6b;
+      --gold: #ffd700;
+      --orange: #ff8c42;
+      --dark-red: #ff4444;
+      --bg-light: #1a1a1a;
+      --text: #f0f0f0;
+      --card-bg: #2a2a2a;
+      --modal-bg: #252525;
+      --input-bg: #333;
+      --input-border: #555;
+      --star-color: #ff6b6b;
+      --ribbon-color: #ff8c42;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Times New Roman', serif;
+      background: var(--bg-light);
+      color: var(--text);
+      line-height: 1.6;
+      position: relative;
+      padding: 20px;
+      transition: var(--transition);
+    }
+
+    /* Георгиевская лента по краям */
+    body::before,
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      width: 20px;
+      height: 100vh;
+      z-index: -1;
+      background: repeating-linear-gradient(
+        to bottom,
+        var(--ribbon-color) 0px,
+        var(--ribbon-color) 10px,
+        #000 10px,
+        #000 20px,
+        var(--gold) 20px,
+        var(--gold) 30px,
+        #000 30px,
+        #000 40px,
+        var(--ribbon-color) 40px,
+        var(--ribbon-color) 50px
+      );
+      transition: var(--transition);
+    }
+    body::before { left: 0; }
+    body::after { right: 0; }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Кнопка смены темы */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--card-bg);
+      border: 2px solid var(--gold);
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      color: var(--text);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+      z-index: 1001;
+      transition: var(--transition);
+    }
+    .theme-toggle:hover {
+      transform: rotate(30deg);
+    }
+    .theme-toggle::before {
+      content: '☀️';
+    }
+    .dark-theme .theme-toggle::before {
+      content: '🌙';
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px 0;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      color: var(--dark-red);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      transition: var(--transition);
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: var(--red);
+      font-style: italic;
+      transition: var(--transition);
+    }
+
+    /* Красные звёзды */
+    .star {
+      position: absolute;
+      color: var(--star-color);
+      font-size: 24px;
+      opacity: 0.7;
+      transition: var(--transition);
+    }
+    .star-1 { top: 10px; left: 5%; }
+    .star-2 { top: 15px; right: 8%; }
+    .star-3 { bottom: 10px; left: 10%; font-size: 18px; }
+    .star-4 { bottom: 15px; right: 5%; font-size: 20px; }
+
+    #search {
+      width: 100%;
+      padding: 12px 20px;
+      font-size: 1.1rem;
+      border: 2px solid var(--input-border);
+      border-radius: 30px;
+      outline: none;
+      background: var(--input-bg);
+      color: var(--text);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+      transition: var(--transition);
+    }
+    #search:focus {
+      border-color: var(--red);
+      box-shadow: 0 4px 10px rgba(204, 0, 0, 0.2);
+    }
+    #search::placeholder {
+      color: var(--text);
+      opacity: 0.6;
+    }
+
+    .heroes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 30px;
+    }
+
+    .hero-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      text-align: center;
+      padding-bottom: 12px;
+    }
+
+    .hero-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    }
+
+    .hero-card img {
+      width: 100%;
+      height: 280px; /* увеличено в 2.5× */
+      object-fit: cover;
+      display: block;
+      border-bottom: 3px solid var(--gold);
+    }
+
+    .hero-name {
+      font-weight: bold;
+      margin: 12px 0 6px;
+      font-size: 1.1rem;
+      color: var(--dark-red);
+      transition: var(--transition);
+    }
+
+    .hero-details {
+      font-size: 0.95rem;
+      color: var(--text);
+      padding: 0 8px;
+      opacity: 0.8;
+      transition: var(--transition);
+    }
+
+    /* Модальное окно */
+    .modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.92);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s;
+    }
+    .modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-content {
+      background: var(--modal-bg);
+      max-width: 85%;
+      max-height: 85vh;
+      overflow-y: auto;
+      border-radius: 16px;
+      padding: 40px;
+      position: relative;
+      transform: scale(0.95);
+      transition: transform 0.4s ease;
+    }
+    .modal.active .modal-content {
+      transform: scale(1);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 32px;
+      color: var(--red);
+      cursor: pointer;
+      font-weight: bold;
+      transition: transform 0.2s;
+    }
+    .close-btn:hover {
+      transform: rotate(90deg);
+    }
+
+    .modal h2 {
+      color: var(--dark-red);
+      margin-bottom: 15px;
+      text-align: center;
+      font-size: 2.2rem;
+      transition: var(--transition);
+    }
+
+    .modal-rank-years {
+      text-align: center;
+      margin-bottom: 20px;
+      color: var(--red);
+      font-weight: bold;
+      font-size: 1.2rem;
+      transition: var(--transition);
+    }
+
+    .modal-photo-wrapper {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .modal img {
+      max-width: 100%;
+      height: auto;
+      max-height: 400px;
+      border: 3px solid var(--gold);
+      border-radius: 8px;
+      display: inline-block;
+      transition: var(--transition);
+    }
+
+    .modal-bio {
+      text-align: justify;
+      line-height: 1.8;
+      font-size: 1.4rem; /* увеличен в ~2 раза */
+      font-weight: bold; /* жирный шрифт */
+      color: var(--text);
+      transition: var(--transition);
+    }
+
+    /* Информация о том, кто предоставил данные */
+    .modal-contributor {
+      margin-top: 25px;
+      padding-top: 15px;
+      border-top: 2px dashed var(--gold);
+      font-style: italic;
+      font-size: 1.1rem;
+      color: var(--text);
+      opacity: 0.8;
+      text-align: right;
+      transition: var(--transition);
+    }
+
+    /* ===== ФУТЕР С ГОДАМИ ВОВ ===== */
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      padding: 30px 0;
+      border-top: 3px solid var(--gold);
+      position: relative;
+    }
+
+    .war-years {
+      font-size: 4.5rem;
+      font-weight: bold;
+      color: var(--dark-red);
+      letter-spacing: 8px;
+      text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+      margin: 10px 0;
+      transition: var(--transition);
+    }
+
+    .war-text {
+      font-size: 1.3rem;
+      color: var(--text);
+      margin-top: 10px;
+      opacity: 0.8;
+      transition: var(--transition);
+    }
+
+    @media (max-width: 600px) {
+      .heroes-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 20px;
+      }
+      .hero-card img {
+        height: 200px;
+      }
+      h1 {
+        font-size: 2.2rem;
+      }
+      .modal-content {
+        max-width: 95%;
+        padding: 25px;
+      }
+      .modal h2 {
+        font-size: 1.8rem;
+      }
+      .modal-bio {
+        font-size: 1.2rem;
+      }
+      .modal-contributor {
+        font-size: 1rem;
+      }
+      .war-years {
+        font-size: 3rem;
+        letter-spacing: 4px;
+      }
+      .war-text {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" id="themeToggle" aria-label="Сменить тему"></button>
+
+  <div class="container">
+    <header>
+      <div class="star star-1">★</div>
+      <div class="star star-2">★</div>
+      <h1>Герои Великой Отечественной войны</h1>
+      <div class="subtitle">Память о родных, чьим подвигом гордятся ученики и сотрудники нашей школы</div>
+      <div class="star star-3">★</div>
+      <div class="star star-4">★</div>
+    </header>
+
+    <input type="text" id="search" placeholder="Поиск по ФИО..." />
+
+    <div class="heroes-grid" id="heroesContainer"></div>
+  </div>
+
+  <footer>
+    <div class="war-years">1941-1945</div>
+    <div class="war-text">Великая Отечественная война</div>
+  </footer>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">×</span>
+      <h2 id="modalName"></h2>
+      <div class="modal-rank-years" id="modalRankYears"></div>
+      <div class="modal-photo-wrapper">
+        <img id="modalPhoto" />
+      </div>
+      <div class="modal-bio" id="modalBio"></div>
+      <div class="modal-contributor" id="modalContributor"></div>
+    </div>
+  </div>
+
+  <script>
+    // ===== СМЕНА ТЕМЫ =====
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    // Загрузка сохранённой темы
+    if (localStorage.getItem('theme') === 'dark') {
+      body.classList.add('dark-theme');
+    }
+
+    themeToggle.addEventListener('click', () => {
+      body.classList.toggle('dark-theme');
+      localStorage.setItem('theme', body.classList.contains('dark-theme') ? 'dark' : 'light');
+    });
+
+    // ===== ЗАГРУЗКА ДАННЫХ =====
+    let heroes = [];
+
+    fetch('data.json')
+      .then(response => response.json())
+      .then(data => {
+        heroes = data;
+        renderHeroes(heroes);
+      })
+      .catch(err => {
+        console.error('Ошибка загрузки данных:', err);
+        document.getElementById('heroesContainer').innerHTML = '<p style="color:red;text-align:center;">Не удалось загрузить данные. Проверьте файл data.json.</p>';
+      });
+
+    // ===== ОТОБРАЖЕНИЕ ГЕРОЕВ =====
+    function renderHeroes(list) {
+      const container = document.getElementById('heroesContainer');
+      container.innerHTML = '';
+      list.forEach(hero => {
+        const card = document.createElement('div');
+        card.className = 'hero-card';
+        card.onclick = () => openModal(hero);
+
+        let detailsHTML = '';
+        if ((hero.rank && hero.rank.trim()) || (hero.birthYear != null || hero.deathYear != null)) {
+          const years = hero.birthYear
+            ? (hero.deathYear ? `${hero.birthYear} — ${hero.deathYear}` : `Родился в ${hero.birthYear}`)
+            : (hero.deathYear ? `Умер в ${hero.deathYear}` : '');
+          const parts = [];
+          if (hero.rank && hero.rank.trim()) parts.push(hero.rank);
+          if (years) parts.push(years);
+          detailsHTML = `<div class="hero-details">${parts.join(' • ')}</div>`;
+        }
+
+        card.innerHTML = `
+          <img src="${hero.photo}" alt="${hero.fullName}" onerror="this.src='https://via.placeholder.com/220x280?text=Фото+отсутствует';">
+          <div class="hero-name">${hero.fullName}</div>
+          ${detailsHTML}
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // ===== ПОИСК =====
+    document.getElementById('search').addEventListener('input', (e) => {
+      const query = e.target.value.trim().toLowerCase();
+      if (!query) {
+        renderHeroes(heroes);
+        return;
+      }
+      const filtered = heroes.filter(h =>
+        h.fullName.toLowerCase().includes(query)
+      );
+      renderHeroes(filtered);
+    });
+
+    // ===== МОДАЛЬНОЕ ОКНО =====
+    function openModal(hero) {
+      document.getElementById('modalName').textContent = hero.fullName;
+
+      let rankYears = '';
+      if ((hero.rank && hero.rank.trim()) || (hero.birthYear != null || hero.deathYear != null)) {
+        const years = hero.birthYear
+          ? (hero.deathYear ? `${hero.birthYear} — ${hero.deathYear}` : `Родился в ${hero.birthYear}`)
+          : (hero.deathYear ? `Умер в ${hero.deathYear}` : '');
+        const parts = [];
+        if (hero.rank && hero.rank.trim()) parts.push(hero.rank);
+        if (years) parts.push(years);
+        rankYears = parts.join(' • ');
+      }
+      document.getElementById('modalRankYears').textContent = rankYears;
+
+      const img = document.getElementById('modalPhoto');
+      img.src = hero.photo;
+      img.alt = hero.fullName;
+      img.onerror = () => { img.src = 'https://via.placeholder.com/300x400?text=Фото+отсутствует'; };
+
+      document.getElementById('modalBio').textContent = hero.bio || 'Биография не указана.';
+
+      // Отображение информации о том, кто предоставил данные
+      const contributorEl = document.getElementById('modalContributor');
+      if (hero.contributor && hero.contributor.trim()) {
+        contributorEl.textContent = `Информацию предоставил(а): ${hero.contributor}`;
+        contributorEl.style.display = 'block';
+      } else {
+        contributorEl.textContent = '';
+        contributorEl.style.display = 'none';
+      }
+
+      document.getElementById('modal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // Клик вне модального окна — закрыть
+    document.getElementById('modal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('modal')) closeModal();
+    });
+  </script>
+</body>
+</html>
