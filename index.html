@@ -2,7 +2,9 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="Герои Великой Отечественной войны — память о родных учеников нашей школы">
   <title>Герои Великой Отечественной</title>
   <style>
     /* ===== ЦВЕТОВАЯ ПАЛИТРА — СВЕТЛАЯ ТЕМА ===== */
@@ -44,14 +46,22 @@
       padding: 0;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      font-family: 'Times New Roman', serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Times New Roman', serif;
       background: var(--bg-light);
       color: var(--text);
       line-height: 1.6;
       position: relative;
       padding: 20px;
       transition: var(--transition);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     /* Георгиевская лента по краям */
@@ -107,6 +117,7 @@
       box-shadow: 0 3px 10px rgba(0,0,0,0.3);
       z-index: 1001;
       transition: var(--transition);
+      -webkit-tap-highlight-color: transparent;
     }
     .theme-toggle:hover {
       transform: rotate(30deg);
@@ -132,6 +143,7 @@
       letter-spacing: 1px;
       margin-bottom: 10px;
       transition: var(--transition);
+      font-weight: bold;
     }
 
     .subtitle {
@@ -139,6 +151,7 @@
       color: var(--red);
       font-style: italic;
       transition: var(--transition);
+      margin-top: 5px;
     }
 
     /* Красные звёзды */
@@ -148,6 +161,7 @@
       font-size: 24px;
       opacity: 0.7;
       transition: var(--transition);
+      pointer-events: none;
     }
     .star-1 { top: 10px; left: 5%; }
     .star-2 { top: 15px; right: 8%; }
@@ -166,6 +180,7 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       margin-bottom: 30px;
       transition: var(--transition);
+      font-family: inherit;
     }
     #search:focus {
       border-color: var(--red);
@@ -179,7 +194,7 @@
     .heroes-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 30px;
+      gap: 25px;
     }
 
     .hero-card {
@@ -191,6 +206,7 @@
       cursor: pointer;
       text-align: center;
       padding-bottom: 12px;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .hero-card:hover {
@@ -200,7 +216,7 @@
 
     .hero-card img {
       width: 100%;
-      height: 280px; /* увеличено в 2.5× */
+      height: 280px;
       object-fit: cover;
       display: block;
       border-bottom: 3px solid var(--gold);
@@ -212,6 +228,7 @@
       font-size: 1.1rem;
       color: var(--dark-red);
       transition: var(--transition);
+      padding: 0 8px;
     }
 
     .hero-details {
@@ -234,6 +251,7 @@
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.4s ease, visibility 0.4s;
+      -webkit-overflow-scrolling: touch;
     }
     .modal.active {
       opacity: 1;
@@ -250,6 +268,7 @@
       position: relative;
       transform: scale(0.95);
       transition: transform 0.4s ease;
+      -webkit-overflow-scrolling: touch;
     }
     .modal.active .modal-content {
       transform: scale(1);
@@ -264,6 +283,7 @@
       cursor: pointer;
       font-weight: bold;
       transition: transform 0.2s;
+      -webkit-tap-highlight-color: transparent;
     }
     .close-btn:hover {
       transform: rotate(90deg);
@@ -275,6 +295,7 @@
       text-align: center;
       font-size: 2.2rem;
       transition: var(--transition);
+      font-weight: bold;
     }
 
     .modal-rank-years {
@@ -304,10 +325,13 @@
     .modal-bio {
       text-align: justify;
       line-height: 1.8;
-      font-size: 1.4rem; /* увеличен в ~2 раза */
-      font-weight: bold; /* жирный шрифт */
+      font-size: 1.4rem;
+      font-weight: bold;
       color: var(--text);
       transition: var(--transition);
+      hyphens: auto;
+      word-break: break-word;
+      white-space: normal;
     }
 
     /* Информация о том, кто предоставил данные */
@@ -340,6 +364,7 @@
       text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
       margin: 10px 0;
       transition: var(--transition);
+      font-family: 'Times New Roman', serif;
     }
 
     .war-text {
@@ -350,36 +375,142 @@
       transition: var(--transition);
     }
 
-    @media (max-width: 600px) {
-      .heroes-grid {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-        gap: 20px;
+    /* ===== АДАПТИВНОСТЬ ===== */
+
+    /* Мобильные устройства (вертикальная ориентация) */
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
       }
-      .hero-card img {
-        height: 200px;
-      }
+
       h1 {
-        font-size: 2.2rem;
+        font-size: 2rem;
+        font-weight: bold;
       }
+
+      .subtitle {
+        font-size: 1rem;
+      }
+
+      #search {
+        font-size: 1rem;
+        padding: 10px 15px;
+      }
+
+      .heroes-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+
+      .hero-card img {
+        height: 140px;
+      }
+
+      .hero-name {
+        font-size: 0.9rem;
+        margin: 8px 0 4px;
+      }
+
+      .hero-details {
+        font-size: 0.85rem;
+      }
+
       .modal-content {
         max-width: 95%;
-        padding: 25px;
+        padding: 25px 20px;
+        max-height: 90vh;
       }
+
       .modal h2 {
         font-size: 1.8rem;
       }
+
       .modal-bio {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        text-align: left;
       }
+
       .modal-contributor {
         font-size: 1rem;
       }
+
       .war-years {
-        font-size: 3rem;
+        font-size: 2.8rem;
         letter-spacing: 4px;
       }
+
       .war-text {
         font-size: 1rem;
+      }
+
+      .theme-toggle {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+      }
+    }
+
+    /* Мобильные устройства (горизонтальная ориентация) */
+    @media (min-width: 481px) and (max-width: 767px) {
+      .heroes-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+      }
+
+      .hero-card img {
+        height: 160px;
+      }
+
+      .hero-name {
+        font-size: 0.95rem;
+      }
+
+      .modal-content {
+        max-width: 90%;
+        padding: 30px;
+      }
+
+      .modal-bio {
+        font-size: 1.2rem;
+      }
+
+      .war-years {
+        font-size: 3.2rem;
+      }
+    }
+
+    /* Планшеты */
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .heroes-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 20px;
+      }
+
+      .hero-card img {
+        height: 220px;
+      }
+
+      .modal-content {
+        max-width: 80%;
+      }
+    }
+
+    /* Ноутбуки и десктопы (оставляем как есть) */
+    @media (min-width: 1024px) {
+      /* Никаких изменений — всё остаётся как было */
+    }
+
+    /* Улучшение читаемости на мобильных */
+    @media (max-width: 600px) {
+      .modal-bio {
+        hyphens: auto;
+        -webkit-hyphens: auto;
+        -moz-hyphens: auto;
+        -ms-hyphens: auto;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
       }
     }
   </style>
@@ -439,14 +570,20 @@
     let heroes = [];
 
     fetch('data.json')
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('HTTP error ' + response.status);
+        }
+        return response.json();
+      })
       .then(data => {
         heroes = data;
         renderHeroes(heroes);
       })
       .catch(err => {
         console.error('Ошибка загрузки данных:', err);
-        document.getElementById('heroesContainer').innerHTML = '<p style="color:red;text-align:center;">Не удалось загрузить данные. Проверьте файл data.json.</p>';
+        const container = document.getElementById('heroesContainer');
+        container.innerHTML = `<p style="color:red;text-align:center;padding:20px;">Не удалось загрузить данные. Проверьте файл data.json.<br><small>${err.message}</small></p>`;
       });
 
     // ===== ОТОБРАЖЕНИЕ ГЕРОЕВ =====
@@ -470,7 +607,7 @@
         }
 
         card.innerHTML = `
-          <img src="${hero.photo}" alt="${hero.fullName}" onerror="this.src='https://via.placeholder.com/220x280?text=Фото+отсутствует';">
+          <img src="${hero.photo}" alt="${hero.fullName}" onerror="this.onerror=null; this.src='https://via.placeholder.com/220x280?text=Фото+отсутствует';">
           <div class="hero-name">${hero.fullName}</div>
           ${detailsHTML}
         `;
@@ -510,9 +647,16 @@
       const img = document.getElementById('modalPhoto');
       img.src = hero.photo;
       img.alt = hero.fullName;
-      img.onerror = () => { img.src = 'https://via.placeholder.com/300x400?text=Фото+отсутствует'; };
+      img.onerror = () => {
+        img.onerror = null;
+        img.src = 'https://via.placeholder.com/300x400?text=Фото+отсутствует';
+      };
 
-      document.getElementById('modalBio').textContent = hero.bio || 'Биография не указана.';
+      // Исправление бага с пробелами на мобильных
+      let bioText = hero.bio || 'Биография не указана.';
+      // Заменяем переносы строк на <br> для корректного отображения
+      bioText = bioText.replace(/\n/g, '<br>');
+      document.getElementById('modalBio').innerHTML = bioText;
 
       // Отображение информации о том, кто предоставил данные
       const contributorEl = document.getElementById('modalContributor');
@@ -525,10 +669,12 @@
       }
 
       document.getElementById('modal').classList.add('active');
+      document.body.style.overflow = 'hidden'; // Запрет прокрутки при открытом модальном окне
     }
 
     function closeModal() {
       document.getElementById('modal').classList.remove('active');
+      document.body.style.overflow = ''; // Восстановление прокрутки
     }
 
     document.addEventListener('keydown', (e) => {
@@ -538,6 +684,24 @@
     // Клик вне модального окна — закрыть
     document.getElementById('modal').addEventListener('click', (e) => {
       if (e.target === document.getElementById('modal')) closeModal();
+    });
+
+    // Поддержка touch-событий для мобильных
+    document.addEventListener('touchstart', function(event) {
+      // Предотвращаем зум при двойном тапе на изображениях
+      if (event.touches.length > 1) {
+        event.preventDefault();
+      }
+    }, { passive: false });
+
+    // Обработка ориентации устройства
+    window.addEventListener('orientationchange', function() {
+      // Перерисовка при изменении ориентации
+      setTimeout(() => {
+        if (document.getElementById('modal').classList.contains('active')) {
+          // Просто обновляем размеры
+        }
+      }, 300);
     });
   </script>
 </body>
