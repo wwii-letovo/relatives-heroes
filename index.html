@@ -566,6 +566,20 @@
       localStorage.setItem('theme', body.classList.contains('dark-theme') ? 'dark' : 'light');
     });
 
+    // ===== ФУНКЦИЯ ДЛЯ ОПРЕДЕЛЕНИЯ ФОРМЫ ГОДОВ С УЧЁТОМ ПОЛА =====
+    function getYearsText(birthYear, deathYear, gender) {
+      const isMale = gender === 'мужской';
+      
+      if (birthYear && deathYear) {
+        return `${birthYear} — ${deathYear}`;
+      } else if (birthYear) {
+        return isMale ? `Родился в ${birthYear}` : `Родилась в ${birthYear}`;
+      } else if (deathYear) {
+        return isMale ? `Умер в ${deathYear}` : `Умерла в ${deathYear}`;
+      }
+      return '';
+    }
+
     // ===== ЗАГРУЗКА ДАННЫХ =====
     let heroes = [];
 
@@ -597,9 +611,7 @@
 
         let detailsHTML = '';
         if ((hero.rank && hero.rank.trim()) || (hero.birthYear != null || hero.deathYear != null)) {
-          const years = hero.birthYear
-            ? (hero.deathYear ? `${hero.birthYear} — ${hero.deathYear}` : `Родился в ${hero.birthYear}`)
-            : (hero.deathYear ? `Умер в ${hero.deathYear}` : '');
+          const years = getYearsText(hero.birthYear, hero.deathYear, hero.gender);
           const parts = [];
           if (hero.rank && hero.rank.trim()) parts.push(hero.rank);
           if (years) parts.push(years);
@@ -634,9 +646,7 @@
 
       let rankYears = '';
       if ((hero.rank && hero.rank.trim()) || (hero.birthYear != null || hero.deathYear != null)) {
-        const years = hero.birthYear
-          ? (hero.deathYear ? `${hero.birthYear} — ${hero.deathYear}` : `Родился в ${hero.birthYear}`)
-          : (hero.deathYear ? `Умер в ${hero.deathYear}` : '');
+        const years = getYearsText(hero.birthYear, hero.deathYear, hero.gender);
         const parts = [];
         if (hero.rank && hero.rank.trim()) parts.push(hero.rank);
         if (years) parts.push(years);
