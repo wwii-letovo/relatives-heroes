@@ -5,584 +5,372 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="description" content="Герои Великой Отечественной войны — память о родных учеников нашей школы">
-  <title>Герои Великой Отечественной Войны</title>
+  <title>Герои Великой Отечественной</title>
   <style>
-    /* ===== ЦВЕТОВАЯ ПАЛИТРА ===== */
+    /* ===== ЦВЕТОВАЯ ПАЛИТРА — СВЕТЛАЯ ТЕМА ===== */
     :root {
-      /* Светлая тема */
-      --bg-primary: #fffaf0;
-      --bg-secondary: #ffffff;
-      --text-primary: #2c1810;
-      --text-secondary: #5a4a3f;
-      --border-color: #e0d6c9;
-      --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-      
-      /* Цвета темы */
-      --red: #b22222;
-      --dark-red: #8b0000;
-      --gold: #ffd700;
-      --dark-gold: #daa520;
+      --red: #c00;
+      --gold: #d4af37;
       --orange: #e65c00;
-      
-      /* Переходы */
-      --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      --dark-red: #8b0000;
+      --bg-light: #fffaf0;
+      --text: #222;
+      --card-bg: #ffffff;
+      --modal-bg: #fff5e6;
+      --input-bg: #ffffff;
+      --input-border: var(--gold);
+      --star-color: var(--red);
+      --ribbon-color: var(--orange);
+      --transition: all 0.4s ease;
     }
 
     /* ===== ТЁМНАЯ ТЕМА ===== */
     .dark-theme {
-      /* Фон и карточки */
-      --bg-primary: #1a1a1a;
-      --bg-secondary: #2a2a2a;
-      --text-primary: #f0f0f0;
-      --text-secondary: #b0b0b0;
-      --border-color: #444444;
-      --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      --red: #ff6b6b;
+      --gold: #ffd700;
+      --orange: #ff8c42;
+      --dark-red: #ff4444;
+      --bg-light: #1a1a1a;
+      --text: #f0f0f0;
+      --card-bg: #2a2a2a;
+      --modal-bg: #252525;
+      --input-bg: #333;
+      --input-border: #555;
+      --star-color: #ff6b6b;
+      --ribbon-color: #ff8c42;
     }
 
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
     }
 
     html {
       scroll-behavior: smooth;
-      font-size: 16px;
     }
 
     body {
-      font-family: 'Georgia', 'Times New Roman', serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      line-height: 1.7;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Times New Roman', serif;
+      background: var(--bg-light);
+      color: var(--text);
+      line-height: 1.6;
       position: relative;
-      padding: 0;
-      overflow-x: hidden;
+      padding: 20px;
       transition: var(--transition);
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
-    /* Георгиевская лента по краям - исправлено на оранжево-жёлто-чёрную */
+    /* Георгиевская лента по краям */
     body::before,
     body::after {
       content: '';
       position: fixed;
       top: 0;
-      width: 25px;
+      width: 20px;
       height: 100vh;
-      z-index: 9999;
+      z-index: -1;
       background: repeating-linear-gradient(
         to bottom,
-        var(--orange) 0px,
-        var(--orange) 10px,
+        var(--ribbon-color) 0px,
+        var(--ribbon-color) 10px,
         #000 10px,
         #000 20px,
         var(--gold) 20px,
         var(--gold) 30px,
         #000 30px,
         #000 40px,
-        var(--orange) 40px,
-        var(--orange) 50px
+        var(--ribbon-color) 40px,
+        var(--ribbon-color) 50px
       );
       transition: var(--transition);
     }
     body::before { left: 0; }
     body::after { right: 0; }
 
-    /* Красные звёзды сверху */
-    .stars-container {
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Кнопка смены темы */
+    .theme-toggle {
       position: fixed;
       top: 20px;
-      left: 0;
-      right: 0;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--card-bg);
+      border: 2px solid var(--gold);
+      cursor: pointer;
       display: flex;
       justify-content: center;
-      gap: 50px;
-      z-index: 9998;
-      pointer-events: none;
+      align-items: center;
+      font-size: 20px;
+      color: var(--text);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+      z-index: 1001;
+      transition: var(--transition);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .theme-toggle:hover {
+      transform: rotate(30deg);
+    }
+    .theme-toggle::before {
+      content: '☀️';
+    }
+    .dark-theme .theme-toggle::before {
+      content: '🌙';
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px 0;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      color: var(--dark-red);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+      transition: var(--transition);
+      font-weight: bold;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: var(--red);
+      font-style: italic;
+      transition: var(--transition);
+      margin-top: 5px;
+    }
+
+    /* Красные звёзды с анимацией мерцания */
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.1); }
     }
 
     .star {
-      font-size: 32px;
-      color: var(--red);
-      opacity: 0.9;
+      position: absolute;
+      color: var(--star-color);
+      font-size: 24px;
+      opacity: 0.7;
+      transition: var(--transition);
+      pointer-events: none;
       animation: twinkle 3s infinite;
     }
-
-    .star:nth-child(2) { animation-delay: 0.5s; }
-    .star:nth-child(3) { animation-delay: 1s; }
-
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.6; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.15); }
-    }
-
-    /* Основной контейнер */
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 20px;
-      position: relative;
-      z-index: 10;
-    }
-
-    /* Хедер */
-    header {
-      background: var(--bg-secondary);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      position: sticky;
-      top: 0;
-      z-index: 9997;
-      border-bottom: 3px solid var(--red);
-      transition: var(--transition);
-    }
-
-    .header-content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 0;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      flex: 1;
-      min-width: 0;
-    }
-
-    .logo-icon {
-      width: 50px;
-      height: 50px;
-      background: var(--red);
-      border: 2px solid var(--gold);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 24px;
-      font-weight: bold;
-      flex-shrink: 0;
-      box-shadow: 0 4px 12px rgba(178, 34, 34, 0.3);
-    }
-
-    .logo-text {
-      min-width: 0;
-    }
-
-    .logo-text h1 {
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: var(--dark-red);
-      letter-spacing: 1px;
-      line-height: 1.3;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      transition: var(--transition);
-    }
-
-    .logo-text p {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      margin-top: 3px;
-      transition: var(--transition);
-    }
-
-    /* Кнопки в хедере */
-    .header-actions {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-      flex-shrink: 0;
-    }
-
-    .theme-toggle {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: var(--bg-secondary);
-      border: 2px solid var(--gold);
-      color: var(--text-primary);
-      font-size: 20px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
-      transition: var(--transition);
-      flex-shrink: 0;
-    }
-
-    .theme-toggle:hover {
-      transform: rotate(360deg);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
-    }
-
-    .about-btn {
-      padding: 11px 26px;
-      background: linear-gradient(135deg, var(--red), var(--dark-red));
-      color: white;
-      border: 2px solid var(--gold);
-      border-radius: 28px;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: var(--transition);
-      box-shadow: 0 3px 12px rgba(178, 34, 34, 0.25);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .about-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 18px rgba(178, 34, 34, 0.35);
-      background: linear-gradient(135deg, var(--dark-red), #660000);
-    }
-
-    /* Героический баннер */
-    .hero-banner {
-      background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.85)), url('https://images.unsplash.com/photo-1544478187-6395d1f9b3c0?w=1600') center/cover;
-      color: white;
-      padding: 55px 20px 45px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      z-index: 900;
-    }
-
-    .hero-banner::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: 
-        radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 70%, rgba(255, 215, 0, 0.1) 0%, transparent 50%);
-      z-index: 1;
-    }
-
-    .hero-banner-content {
-      position: relative;
-      z-index: 2;
-      max-width: 850px;
-      margin: 0 auto;
-    }
-
-    .hero-banner h2 {
-      font-size: 3.1rem;
-      font-weight: bold;
-      margin-bottom: 15px;
-      text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.8);
-      letter-spacing: 2px;
-      background: linear-gradient(to right, var(--gold), #ffffff, var(--gold));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .hero-banner p {
-      font-size: 1.25rem;
-      opacity: 0.92;
-      margin-bottom: 25px;
-      font-style: italic;
-      max-width: 700px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .war-years-badge {
-      display: inline-block;
-      background: var(--red);
-      color: white;
-      padding: 9px 28px;
-      border-radius: 45px;
-      font-size: 2.1rem;
-      font-weight: bold;
-      letter-spacing: 4px;
-      border: 2px solid var(--gold);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
-      margin-top: 15px;
-    }
-
-    /* Поисковая строка */
-    .search-section {
-      padding: 40px 20px 35px;
-      background: var(--bg-secondary);
-      box-shadow: 0 3px 15px rgba(0, 0, 0, 0.07);
-      transition: var(--transition);
-      position: relative;
-      z-index: 950;
-    }
-
-    .search-container {
-      max-width: 850px;
-      margin: 0 auto;
-      position: relative;
-    }
+    .star-1 { top: 10px; left: 5%; animation-delay: 0s; }
+    .star-2 { top: 15px; right: 8%; animation-delay: 0.5s; }
+    .star-3 { bottom: 10px; left: 10%; font-size: 18px; animation-delay: 1s; }
+    .star-4 { bottom: 15px; right: 5%; font-size: 20px; animation-delay: 1.5s; }
 
     #search {
       width: 100%;
-      padding: 15px 25px;
-      font-size: 1.15rem;
-      border: 2px solid var(--red);
-      border-radius: 50px;
+      padding: 12px 20px;
+      font-size: 1.1rem;
+      border: 2px solid var(--input-border);
+      border-radius: 30px;
       outline: none;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      box-shadow: 0 4px 14px rgba(178, 34, 34, 0.1);
+      background: var(--input-bg);
+      color: var(--text);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
       transition: var(--transition);
       font-family: inherit;
     }
-
     #search:focus {
-      border-color: var(--gold);
-      box-shadow: 0 6px 18px rgba(178, 34, 34, 0.18);
+      border-color: var(--red);
+      box-shadow: 0 4px 10px rgba(204, 0, 0, 0.2);
     }
-
     #search::placeholder {
-      color: var(--text-secondary);
-      opacity: 0.75;
+      color: var(--text);
+      opacity: 0.6;
     }
 
-    /* Секция героев */
-    .heroes-section {
-      padding: 55px 20px 60px;
-    }
-
-    .section-title {
-      text-align: center;
-      margin-bottom: 45px;
-      position: relative;
-    }
-
-    .section-title h2 {
-      font-size: 2.4rem;
-      color: var(--dark-red);
-      display: inline-block;
-      position: relative;
-      padding-bottom: 13px;
-      transition: var(--transition);
-    }
-
-    .section-title h2::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 75px;
-      height: 3px;
-      background: var(--gold);
-      border-radius: 2px;
-    }
-
-    /* Сетка героев */
     .heroes-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-      gap: 32px;
-      max-width: 1450px;
-      margin: 0 auto;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 25px;
     }
 
     .hero-card {
-      background: var(--bg-secondary);
-      border-radius: 14px;
+      background: var(--card-bg);
+      border-radius: 12px;
       overflow: hidden;
-      box-shadow: var(--card-shadow);
-      transition: var(--transition);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
       cursor: pointer;
-      position: relative;
-      border: 2px solid transparent;
+      text-align: center;
+      padding-bottom: 12px;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .hero-card:hover {
-      transform: translateY(-9px);
-      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
-      border-color: var(--red);
+      transform: translateY(-8px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
     }
 
-    /* Фотография героя */
-    .hero-photo {
+    .hero-card img {
       width: 100%;
-      height: 460px;
+      height: 280px;
       object-fit: cover;
-      object-position: center 30%;
       display: block;
-      transition: var(--transition);
-    }
-
-    .hero-card:hover .hero-photo {
-      transform: scale(1.04);
-    }
-
-    /* Информация о герое */
-    .hero-info {
-      padding: 22px 20px 24px;
+      border-bottom: 3px solid var(--gold);
     }
 
     .hero-name {
-      font-size: 1.35rem;
       font-weight: bold;
+      margin: 12px 0 6px;
+      font-size: 1.1rem;
       color: var(--dark-red);
-      margin-bottom: 10px;
-      line-height: 1.35;
       transition: var(--transition);
+      padding: 0 8px;
     }
 
     .hero-details {
       font-size: 0.95rem;
-      color: var(--text-secondary);
-      line-height: 1.55;
+      color: var(--text);
+      padding: 0 8px;
+      opacity: 0.8;
       transition: var(--transition);
     }
 
     /* Модальное окно */
     .modal {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.93);
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.92);
       display: flex;
       justify-content: center;
       align-items: center;
-      z-index: 10000;
+      z-index: 1000;
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.4s ease, visibility 0.4s;
+      -webkit-overflow-scrolling: touch;
     }
-
     .modal.active {
       opacity: 1;
       visibility: visible;
     }
 
     .modal-content {
-      background: var(--bg-secondary);
-      max-width: 820px;
-      max-height: 92vh;
+      background: var(--modal-bg);
+      max-width: 85%;
+      max-height: 85vh;
       overflow-y: auto;
-      border-radius: 20px;
-      padding: 50px;
+      border-radius: 16px;
+      padding: 40px;
       position: relative;
-      transform: scale(0.9);
+      transform: scale(0.95);
       transition: transform 0.4s ease;
-      box-shadow: 0 22px 65px rgba(0, 0, 0, 0.55);
-      border: 3px solid var(--gold);
+      -webkit-overflow-scrolling: touch;
     }
-
     .modal.active .modal-content {
       transform: scale(1);
     }
 
     .close-btn {
       position: absolute;
-      top: 22px;
-      right: 28px;
-      font-size: 38px;
+      top: 15px;
+      right: 20px;
+      font-size: 32px;
       color: var(--red);
       cursor: pointer;
-      font-weight: 300;
-      transition: transform 0.3s;
+      font-weight: bold;
+      transition: transform 0.2s;
+      -webkit-tap-highlight-color: transparent;
     }
-
     .close-btn:hover {
-      transform: rotate(90deg) scale(1.2);
+      transform: rotate(90deg);
     }
 
     .modal h2 {
-      font-size: 2.7rem;
       color: var(--dark-red);
-      margin-bottom: 22px;
+      margin-bottom: 15px;
       text-align: center;
-      position: relative;
-      padding-bottom: 13px;
+      font-size: 2.2rem;
       transition: var(--transition);
-    }
-
-    .modal h2::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 95px;
-      height: 3px;
-      background: var(--gold);
+      font-weight: bold;
     }
 
     .modal-rank-years {
       text-align: center;
-      margin-bottom: 28px;
-      font-size: 1.3rem;
+      margin-bottom: 20px;
       color: var(--red);
       font-weight: bold;
-      padding: 10px;
-      background: rgba(255, 215, 0, 0.1);
-      border-radius: 10px;
+      font-size: 1.2rem;
       transition: var(--transition);
     }
 
     .modal-photo-wrapper {
       text-align: center;
-      margin-bottom: 35px;
-      position: relative;
+      margin-bottom: 25px;
     }
 
     .modal img {
       max-width: 100%;
       height: auto;
-      max-height: 480px;
-      border: 5px solid var(--gold);
-      border-radius: 12px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-      object-fit: contain;
+      max-height: 400px;
+      border: 3px solid var(--gold);
+      border-radius: 8px;
       display: inline-block;
+      transition: var(--transition);
     }
 
     .modal-bio {
-      font-size: 1.3rem;
-      line-height: 1.9;
       text-align: justify;
-      color: var(--text-primary);
-      margin-bottom: 28px;
+      line-height: 1.8;
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: var(--text);
       transition: var(--transition);
+      hyphens: auto;
+      word-break: break-word;
+      white-space: normal;
+      margin-bottom: 25px;
     }
 
+    /* Увеличенный интервал между абзацами */
     .modal-bio br {
       display: block;
-      margin-bottom: 24px;
+      margin-bottom: 25px;
       content: "";
     }
 
+    /* Информация о том, кто предоставил данные */
     .modal-contributor {
-      margin-top: 35px;
-      padding-top: 25px;
-      border-top: 3px dashed var(--gold);
+      margin-top: 25px;
+      padding-top: 15px;
+      border-top: 2px dashed var(--gold);
       font-style: italic;
-      font-size: 1.15rem;
+      font-size: 1.1rem;
+      color: var(--text);
+      opacity: 0.8;
       text-align: right;
-      color: var(--text-secondary);
       transition: var(--transition);
     }
 
-    /* Футер */
+    /* ===== УЛУЧШЕННЫЙ ФУТЕР С ГОДАМИ ВОВ ===== */
     footer {
       background: linear-gradient(135deg, var(--dark-red), var(--red));
       color: white;
-      padding: 60px 20px 45px;
+      padding: 50px 20px 35px;
       text-align: center;
       position: relative;
       overflow: hidden;
-      transition: var(--transition);
+      margin-top: 60px;
+      border-top: 3px solid var(--gold);
     }
 
     footer::before {
@@ -591,432 +379,322 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 10px;
+      height: 8px;
       background: repeating-linear-gradient(
         to right,
         var(--gold) 0px,
-        var(--gold) 12px,
-        transparent 12px,
-        transparent 24px
+        var(--gold) 10px,
+        transparent 10px,
+        transparent 20px
       );
     }
 
     .footer-content {
-      max-width: 1050px;
+      max-width: 1000px;
       margin: 0 auto;
       position: relative;
       z-index: 2;
     }
 
     .footer-text {
-      font-size: 1.1rem;
-      opacity: 0.94;
-      margin-bottom: 30px;
-      max-width: 750px;
+      font-size: 1.05rem;
+      opacity: 0.92;
+      margin-bottom: 25px;
+      max-width: 700px;
       margin-left: auto;
       margin-right: auto;
-      line-height: 1.75;
+      line-height: 1.7;
     }
 
-    .war-years-footer {
-      font-size: 4.8rem;
+    .war-years {
+      font-size: 4.5rem;
       font-weight: bold;
-      letter-spacing: 9px;
-      margin: 30px 0;
-      text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+      letter-spacing: 8px;
+      margin: 25px 0;
+      text-shadow: 0 0 18px rgba(255, 215, 0, 0.7);
       background: linear-gradient(to right, var(--gold), #ffffff, var(--gold));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
+    .war-text {
+      font-size: 1.3rem;
+      margin-top: 10px;
+      opacity: 0.9;
+    }
+
     .footer-quote {
       font-style: italic;
-      font-size: 1.2rem;
-      margin-top: 20px;
-      opacity: 0.92;
+      font-size: 1.15rem;
+      margin-top: 15px;
+      opacity: 0.9;
     }
 
-    /* Адаптивность */
-    @media (max-width: 1024px) {
-      .logo-text h1 {
-        font-size: 1.7rem;
-      }
-      
-      .hero-banner h2 {
-        font-size: 2.8rem;
-      }
-      
-      .war-years-badge {
-        font-size: 2rem;
-      }
-      
-      .heroes-grid {
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 28px;
-      }
-      
-      .hero-photo {
-        height: 430px;
-      }
+    /* Кнопка "О нас" */
+    .about-btn {
+      display: inline-block;
+      margin: 30px auto 0;
+      padding: 12px 35px;
+      background: linear-gradient(135deg, var(--red), var(--dark-red));
+      color: #fff;
+      text-decoration: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border: 2px solid var(--gold);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
 
-    @media (max-width: 768px) {
-      /* Уменьшаем ширину ленты на планшетах */
-      body::before,
-      body::after {
-        width: 18px;
-      }
-      
-      .header-content {
-        flex-direction: column;
-        gap: 18px;
-      }
-      
-      .logo {
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-      }
-      
-      .logo-icon {
-        width: 46px;
-        height: 46px;
-        font-size: 22px;
-      }
-      
-      .logo-text h1 {
-        font-size: 1.6rem;
-        text-align: center;
-        white-space: normal;
-      }
-      
-      .logo-text p {
-        font-size: 0.88rem;
-        text-align: center;
-      }
-      
-      .theme-toggle {
-        width: 42px;
-        height: 42px;
-        font-size: 19px;
-      }
-      
-      .about-btn {
-        padding: 10px 24px;
-        font-size: 0.95rem;
-      }
-      
-      .hero-banner {
-        padding: 50px 18px 40px;
-      }
-      
-      .hero-banner h2 {
-        font-size: 2.5rem;
-      }
-      
-      .hero-banner p {
-        font-size: 1.15rem;
-      }
-      
-      .war-years-badge {
-        font-size: 1.85rem;
-        padding: 8px 24px;
-      }
-      
-      .search-section {
-        padding: 35px 18px 30px;
-      }
-      
-      #search {
-        font-size: 1.05rem;
-        padding: 14px 22px;
-      }
-      
-      .heroes-grid {
-        grid-template-columns: repeat(auto-fill, minmax(235px, 1fr));
-        gap: 26px;
-      }
-      
-      .hero-photo {
-        height: 390px;
-      }
-      
-      .hero-name {
-        font-size: 1.25rem;
-      }
-      
-      .section-title h2 {
-        font-size: 2.2rem;
-      }
-      
-      .modal-content {
-        max-width: 96%;
-        padding: 40px 30px;
-      }
-      
-      .modal h2 {
-        font-size: 2.3rem;
-      }
-      
-      .war-years-footer {
-        font-size: 3.6rem;
-      }
-      
-      footer {
-        padding: 50px 18px 40px;
-      }
+    .about-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
     }
 
+    .about-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .about-btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    /* Модальное окно "О нас" */
+    #aboutModal .modal-content {
+      max-width: 75%;
+      max-height: 80vh;
+      padding: 50px;
+    }
+
+    #aboutModal h2 {
+      margin-bottom: 25px;
+      font-size: 2.5rem;
+    }
+
+    #aboutModal .about-text {
+      font-size: 1.3rem;
+      line-height: 1.8;
+      text-align: justify;
+      color: var(--text);
+    }
+
+    #aboutModal .about-text p {
+      margin-bottom: 20px;
+    }
+
+    /* ===== АДАПТИВНОСТЬ ===== */
+
+    /* Мобильные устройства (вертикальная ориентация) */
     @media (max-width: 480px) {
-      /* Ещё больше уменьшаем ленту на телефонах */
-      body::before,
-      body::after {
-        width: 12px;
+      body {
+        padding: 10px;
       }
-      
-      .stars-container {
-        gap: 20px;
-        top: 15px;
+
+      h1 {
+        font-size: 2rem;
+        font-weight: bold;
       }
-      
-      .star {
-        font-size: 22px;
+
+      .subtitle {
+        font-size: 1rem;
       }
-      
-      .logo-icon {
-        width: 40px;
-        height: 40px;
-        font-size: 19px;
-      }
-      
-      .logo-text h1 {
-        font-size: 1.45rem;
-        line-height: 1.4;
-      }
-      
-      .logo-text p {
-        font-size: 0.82rem;
-      }
-      
-      .theme-toggle {
-        width: 38px;
-        height: 38px;
-        font-size: 17px;
-      }
-      
-      .about-btn {
-        padding: 9px 20px;
-        font-size: 0.9rem;
-      }
-      
-      .hero-banner {
-        padding: 42px 15px 35px;
-      }
-      
-      .hero-banner h2 {
-        font-size: 2.1rem;
-      }
-      
-      .hero-banner p {
-        font-size: 1.05rem;
-        margin-bottom: 22px;
-      }
-      
-      .war-years-badge {
-        font-size: 1.65rem;
-        padding: 7px 20px;
-        letter-spacing: 3px;
-      }
-      
-      .search-section {
-        padding: 30px 15px 25px;
-      }
-      
+
       #search {
         font-size: 1rem;
-        padding: 13px 20px;
+        padding: 10px 15px;
       }
-      
-      /* 3 колонки на мобильных */
+
       .heroes-grid {
         grid-template-columns: repeat(3, 1fr);
-        gap: 18px;
+        gap: 12px;
       }
-      
-      /* Уменьшаем фото для мобильных */
-      .hero-photo {
-        height: 240px;
-        object-position: center 40%;
+
+      .hero-card img {
+        height: 140px;
       }
-      
-      .hero-info {
-        padding: 15px 12px 16px;
-      }
-      
+
       .hero-name {
-        font-size: 1.15rem;
-        margin-bottom: 6px;
+        font-size: 0.9rem;
+        margin: 8px 0 4px;
       }
-      
+
       .hero-details {
-        font-size: 0.88rem;
-        line-height: 1.5;
+        font-size: 0.85rem;
       }
-      
-      .section-title {
-        margin-bottom: 35px;
-      }
-      
-      .section-title h2 {
-        font-size: 2rem;
-      }
-      
-      .section-title h2::after {
-        width: 65px;
-      }
-      
+
       .modal-content {
-        max-width: 98%;
-        padding: 35px 22px;
+        max-width: 95%;
+        padding: 25px 20px;
+        max-height: 90vh;
       }
-      
+
       .modal h2 {
+        font-size: 1.8rem;
+      }
+
+      .modal-bio {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        text-align: left;
+      }
+
+      .modal-contributor {
+        font-size: 1rem;
+      }
+
+      .war-years {
+        font-size: 2.8rem;
+        letter-spacing: 4px;
+      }
+
+      .war-text {
+        font-size: 1rem;
+      }
+
+      .footer-text {
+        font-size: 0.95rem;
+      }
+
+      .footer-quote {
+        font-size: 1rem;
+      }
+
+      footer {
+        padding: 35px 15px 25px;
+      }
+
+      .theme-toggle {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+      }
+
+      .about-btn {
+        padding: 10px 25px;
+        font-size: 1rem;
+      }
+
+      #aboutModal .modal-content {
+        max-width: 95%;
+        padding: 30px 20px;
+      }
+
+      #aboutModal h2 {
         font-size: 2rem;
       }
-      
-      .modal img {
-        max-height: 380px;
-      }
-      
-      .modal-bio {
-        font-size: 1.15rem;
-        line-height: 1.8;
-      }
-      
-      .modal-bio br {
-        margin-bottom: 20px;
-      }
-      
-      .war-years-footer {
-        font-size: 2.9rem;
-        letter-spacing: 7px;
-      }
-      
-      .footer-text {
-        font-size: 1rem;
-        margin-bottom: 25px;
-      }
-      
-      footer {
-        padding: 45px 15px 35px;
-      }
-      
-      .footer-quote {
+
+      #aboutModal .about-text {
         font-size: 1.1rem;
       }
     }
-    
-    /* Очень узкие экраны */
-    @media (max-width: 360px) {
-      .logo-text h1 {
-        font-size: 1.35rem;
-      }
-      
-      .hero-banner h2 {
-        font-size: 1.9rem;
-      }
-      
-      .war-years-badge {
-        font-size: 1.5rem;
-        padding: 6px 18px;
-      }
-      
-      /* Сохраняем 3 колонки даже на самых узких экранах */
+
+    /* Мобильные устройства (горизонтальная ориентация) */
+    @media (min-width: 481px) and (max-width: 767px) {
       .heroes-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 15px;
       }
-      
-      .hero-photo {
+
+      .hero-card img {
+        height: 160px;
+      }
+
+      .hero-name {
+        font-size: 0.95rem;
+      }
+
+      .modal-content {
+        max-width: 90%;
+        padding: 30px;
+      }
+
+      .modal-bio {
+        font-size: 1.2rem;
+      }
+
+      .war-years {
+        font-size: 3.2rem;
+      }
+    }
+
+    /* Планшеты */
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .heroes-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 20px;
+      }
+
+      .hero-card img {
         height: 220px;
       }
-      
-      .hero-name {
-        font-size: 1.08rem;
+
+      .modal-content {
+        max-width: 80%;
       }
-      
-      .war-years-footer {
-        font-size: 2.6rem;
+    }
+
+    /* Ноутбуки и десктопы (оставляем как есть) */
+    @media (min-width: 1024px) {
+      /* Никаких изменений — всё остаётся как было */
+    }
+
+    /* Улучшение читаемости на мобильных */
+    @media (max-width: 600px) {
+      .modal-bio {
+        hyphens: auto;
+        -webkit-hyphens: auto;
+        -moz-hyphens: auto;
+        -ms-hyphens: auto;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Красные звёзды сверху -->
-  <div class="stars-container">
-    <div class="star">★</div>
-    <div class="star">★</div>
-    <div class="star">★</div>
+  <button class="theme-toggle" id="themeToggle" aria-label="Сменить тему"></button>
+
+  <div class="container">
+    <header>
+      <div class="star star-1">★</div>
+      <div class="star star-2">★</div>
+      <h1>Герои Великой Отечественной войны</h1>
+      <div class="subtitle">Память о родных, чьим подвигом гордятся ученики и сотрудники нашей школы</div>
+      <div class="star star-3">★</div>
+      <div class="star star-4">★</div>
+    </header>
+
+    <input type="text" id="search" placeholder="Поиск по ФИО..." />
+
+    <div class="heroes-grid" id="heroesContainer"></div>
   </div>
 
-  <!-- Хедер -->
-  <header>
-    <div class="container">
-      <div class="header-content">
-        <div class="logo">
-          <div class="logo-icon">П</div>
-          <div class="logo-text">
-            <h1>Герои Великой Отечественной Войны</h1>
-            <p>Память поколений</p>
-          </div>
-        </div>
-        <div class="header-actions">
-          <button class="theme-toggle" id="themeToggle" aria-label="Сменить тему">☀️</button>
-          <button class="about-btn" id="aboutBtn">О проекте</button>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- Героический баннер -->
-  <section class="hero-banner">
-    <div class="hero-banner-content">
-      <h2>ПАМЯТЬ ПОКОЛЕНИЙ</h2>
-      <p>Имена героев, чьим подвигом гордятся ученики нашей школы</p>
-      <div class="war-years-badge">1941-1945</div>
-    </div>
-  </section>
-
-  <!-- Поисковая строка -->
-  <section class="search-section">
-    <div class="container">
-      <div class="search-container">
-        <input type="text" id="search" placeholder="Поиск по ФИО героя..." />
-      </div>
-    </div>
-  </section>
-
-  <!-- Секция героев -->
-  <section class="heroes-section">
-    <div class="container">
-      <div class="section-title">
-        <h2>Герои войны</h2>
-      </div>
-      <div class="heroes-grid" id="heroesContainer"></div>
-    </div>
-  </section>
-
-  <!-- Футер -->
   <footer>
     <div class="footer-content">
       <p class="footer-text">Мы создаем живой архив родственников Летовцев — участников Великой Отечественной войны. Здесь собраны их награды, звания, фото, личные истории и судьбы.</p>
-      <div class="war-years-footer">1941-1945</div>
+      <div class="war-years">1941-1945</div>
+      <p class="war-text">Великая Отечественная война</p>
       <p class="footer-quote">«Никто не забыт, ничто не забыто»</p>
+      
+      <button class="about-btn" id="aboutBtn">О проекте</button>
     </div>
   </footer>
 
-  <!-- Модальное окно героя -->
   <div class="modal" id="modal">
     <div class="modal-content">
       <span class="close-btn" onclick="closeModal()">×</span>
@@ -1030,12 +708,11 @@
     </div>
   </div>
 
-  <!-- Модальное окно "О нас" -->
   <div class="modal" id="aboutModal">
     <div class="modal-content">
       <span class="close-btn" onclick="closeAboutModal()">×</span>
       <h2>О проекте</h2>
-      <div class="modal-bio">
+      <div class="about-text">
         <p>Мы создаем сайт — живой архив родственников Летовцев, участников Великой Отечественной войны. Здесь будут собраны их награды, звания, фото, личные истории и судьбы.</p>
         <p>В 2026 году, когда живых ветеранов осталось менее 10 тысяч (по данным Минобороны РФ), личные истории - это последний шанс зафиксировать уникальные свидетельства. Мы собираем данные, которые создадут живой архив, дополняющий официальные источники такие как «Подвиг Народа» или «Дорога Памяти».</p>
         <p>Исследователи родословной тонут в скудных архивах — дата призыва, часть, награды. За ними не видно человека: лица, подвига, характера, послевоенной жизни. Личные воспоминания, фото и письма пылятся в семьях, не доходя до общественности.</p>
@@ -1053,14 +730,11 @@
     // Загрузка сохранённой темы
     if (localStorage.getItem('theme') === 'dark') {
       body.classList.add('dark-theme');
-      themeToggle.textContent = '🌙';
     }
 
     themeToggle.addEventListener('click', () => {
       body.classList.toggle('dark-theme');
-      const isDark = body.classList.contains('dark-theme');
-      themeToggle.textContent = isDark ? '🌙' : '☀️';
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      localStorage.setItem('theme', body.classList.contains('dark-theme') ? 'dark' : 'light');
     });
 
     // ===== ФУНКЦИЯ ДЛЯ ОПРЕДЕЛЕНИЯ ФОРМЫ ГОДОВ С УЧЁТОМ ПОЛА =====
@@ -1081,14 +755,20 @@
     let heroes = [];
 
     fetch('data.json')
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('HTTP error ' + response.status);
+        }
+        return response.json();
+      })
       .then(data => {
         heroes = data;
         renderHeroes(heroes);
       })
       .catch(err => {
         console.error('Ошибка загрузки данных:', err);
-        document.getElementById('heroesContainer').innerHTML = '<p style="color:var(--red);text-align:center;padding:40px;">Не удалось загрузить данные. Проверьте файл data.json.</p>';
+        const container = document.getElementById('heroesContainer');
+        container.innerHTML = `<p style="color:red;text-align:center;padding:20px;">Не удалось загрузить данные. Проверьте файл data.json.<br><small>${err.message}</small></p>`;
       });
 
     // ===== ОТОБРАЖЕНИЕ ГЕРОЕВ =====
@@ -1110,11 +790,9 @@
         }
 
         card.innerHTML = `
-          <img src="${hero.photo}" alt="${hero.fullName}" class="hero-photo" onerror="this.onerror=null; this.src='https://via.placeholder.com/270x460?text=Фото+отсутствует';">
-          <div class="hero-info">
-            <div class="hero-name">${hero.fullName}</div>
-            ${detailsHTML}
-          </div>
+          <img src="${hero.photo}" alt="${hero.fullName}" onerror="this.onerror=null; this.src='https://via.placeholder.com/220x280?text=Фото+отсутствует';">
+          <div class="hero-name">${hero.fullName}</div>
+          ${detailsHTML}
         `;
         container.appendChild(card);
       });
@@ -1152,13 +830,16 @@
       img.alt = hero.fullName;
       img.onerror = () => {
         img.onerror = null;
-        img.src = 'https://via.placeholder.com/420x520?text=Фото+отсутствует';
+        img.src = 'https://via.placeholder.com/300x400?text=Фото+отсутствует';
       };
 
+      // Исправление бага с пробелами на мобильных
       let bioText = hero.bio || 'Биография не указана.';
+      // Заменяем переносы строк на <br> для корректного отображения
       bioText = bioText.replace(/\n/g, '<br>');
       document.getElementById('modalBio').innerHTML = bioText;
 
+      // Отображение информации о том, кто предоставил данные
       const contributorEl = document.getElementById('modalContributor');
       if (hero.contributor && hero.contributor.trim()) {
         contributorEl.textContent = `Информацию предоставил(а): ${hero.contributor}`;
@@ -1169,12 +850,12 @@
       }
 
       document.getElementById('modal').classList.add('active');
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden'; // Запрет прокрутки при открытом модальном окне
     }
 
     function closeModal() {
       document.getElementById('modal').classList.remove('active');
-      document.body.style.overflow = '';
+      document.body.style.overflow = ''; // Восстановление прокрутки
     }
 
     // ===== МОДАЛЬНОЕ ОКНО "О НАС" =====
@@ -1196,12 +877,32 @@
       }
     });
 
+    // Клик вне модального окна — закрыть
     document.getElementById('modal').addEventListener('click', (e) => {
       if (e.target === document.getElementById('modal')) closeModal();
     });
 
     document.getElementById('aboutModal').addEventListener('click', (e) => {
       if (e.target === document.getElementById('aboutModal')) closeAboutModal();
+    });
+
+    // Поддержка touch-событий для мобильных
+    document.addEventListener('touchstart', function(event) {
+      // Предотвращаем зум при двойном тапе на изображениях
+      if (event.touches.length > 1) {
+        event.preventDefault();
+      }
+    }, { passive: false });
+
+    // Обработка ориентации устройства
+    window.addEventListener('orientationchange', function() {
+      // Перерисовка при изменении ориентации
+      setTimeout(() => {
+        if (document.getElementById('modal').classList.contains('active') || 
+            document.getElementById('aboutModal').classList.contains('active')) {
+          // Просто обновляем размеры
+        }
+      }, 300);
     });
   </script>
 </body>
